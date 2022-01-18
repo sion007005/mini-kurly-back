@@ -1,0 +1,59 @@
+package com.sion.minikurlyback.service;
+
+import com.sion.minikurlyback.dto.MemberDto;
+import com.sion.minikurlyback.entity.Member;
+import com.sion.minikurlyback.enums.Authority;
+import com.sion.minikurlyback.jwt.SecurityUtil;
+import com.sion.minikurlyback.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
+
+@Service
+@RequiredArgsConstructor
+public class MemberService {
+    private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
+
+    @Transactional
+    public Long join(MemberDto memberDto) {
+        Member member = Member.builder()
+                .memberId(memberDto.getMemberId())
+                .password(passwordEncoder.encode(memberDto.getPassword()))
+                .name(memberDto.getName())
+                .email(memberDto.getEmail())
+                .phone(memberDto.getPhone())
+                .gender(memberDto.getGender())
+                .birth(memberDto.getBirth())
+                .authority(Authority.ROLE_USER)
+                .build();
+
+        memberRepository.save(member);
+
+        return member.getIdx();
+    }
+
+    @Transactional(readOnly = true)
+    public MemberDto findOneByMemberId(String memberId) {
+        Member member = memberRepository.findOneByMemberId(memberId);
+
+        if (Objects.isNull(member)) {
+            new RuntimeException("유저 정보가 없습니다.");
+        }
+
+        MemberDto memberDto = MemberDto.from(member);
+
+        return memberDto;
+    }
+
+    @Transactional(readOnly = true)
+    public MemberDto getMyInfo() {
+        Member member = memberRepository.findOneByMemberId(SecurityUtil.getCurrentMemberId());
+        MemberDto memberDto = MemberDto.from(member);
+
+        return memberDto;
+    }
+}
