@@ -15,7 +15,7 @@ public class ItemDto {
     private Integer originalPrice;
     private Integer salePrice;
     private Integer stock;
-    private String imageDownloadUrl;
+    private String imagePath;
     private boolean isKurlyOnly;
 
     public static ItemDto from(Item item) {
@@ -29,7 +29,7 @@ public class ItemDto {
                 .salePrice(item.getSalePrice())
                 .stock(item.getStock())
                 .isKurlyOnly(item.isKurlyOnly())
-                .imageDownloadUrl(item.getImagePath())
+                .imagePath(item.getImagePath())
                 .build();
     }
 }

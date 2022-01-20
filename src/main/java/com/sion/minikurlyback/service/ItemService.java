@@ -16,14 +16,22 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final FileUploadUtil fileUploadUtil;
 
-    public ItemDto create(MultipartFile imageFile, ItemDto itemDto) {
+    public String saveItemImage(MultipartFile imageFile, String url) {
         String savedImagePath = "";
         if (imageFile == null || imageFile.isEmpty()) {
-            savedImagePath = fileUploadUtil.uploadImageByUrl(itemDto.getImageDownloadUrl());
+            savedImagePath = fileUploadUtil.uploadImageByUrl(url);
         } else {
             savedImagePath = fileUploadUtil.uploadImageByFile(imageFile);
         }
 
+        return savedImagePath;
+    }
+
+    public void deleteItemImage(String path) {
+        fileUploadUtil.deleteExistingFile(path);
+    }
+
+    public ItemDto create(ItemDto itemDto) {
         Item item = Item.builder()
                 .name(itemDto.getName())
                 .brand(itemDto.getBrand())
@@ -32,7 +40,7 @@ public class ItemService {
                 .originalPrice(itemDto.getOriginalPrice())
                 .stock(itemDto.getStock())
                 .isKurlyOnly(itemDto.isKurlyOnly())
-                .imagePath(savedImagePath)
+                .imagePath(itemDto.getImagePath())
                 .build();
 
         itemRepository.save(item);

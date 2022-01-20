@@ -21,7 +21,6 @@ public class Item extends BaseEntity {
     private Integer stock;
     private boolean isKurlyOnly;
     private String imagePath;
-//    private MultipartFile imageFile;
 
     @Enumerated
     private SaleStatus saleStatus;
