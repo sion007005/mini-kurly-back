@@ -12,10 +12,10 @@ public class ItemDto {
     private String name;
     private String brand;
     private String description;
-    private int originalPrice;
-    private int discountRate;
-    private int salePrice;
-    private int stock;
+    private Integer originalPrice;
+    private Integer salePrice;
+    private Integer stock;
+    private String imageDownloadUrl;
     private boolean isKurlyOnly;
 
     public static ItemDto from(Item item) {
@@ -26,10 +26,10 @@ public class ItemDto {
                 .brand(item.getBrand())
                 .description(item.getDescription())
                 .originalPrice(item.getOriginalPrice())
-                .discountRate(item.getDiscountRate())
                 .salePrice(item.getSalePrice())
                 .stock(item.getStock())
                 .isKurlyOnly(item.isKurlyOnly())
+                .imageDownloadUrl(item.getImagePath())
                 .build();
     }
 }

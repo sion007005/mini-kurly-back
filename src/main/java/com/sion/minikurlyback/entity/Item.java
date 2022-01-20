@@ -9,19 +9,18 @@ import javax.persistence.*;
 @Getter
 @Builder
 @AllArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Item extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
     private String brand;
     private String description;
-    private int salePrice;
-    private int originalPrice;
-    private int discountRate;
-    private int stock;
+    private Integer salePrice;
+    private Integer originalPrice;
+    private Integer stock;
     private boolean isKurlyOnly;
-    private String imageFilePath;
+    private String imagePath;
 //    private MultipartFile imageFile;
 
     @Enumerated
