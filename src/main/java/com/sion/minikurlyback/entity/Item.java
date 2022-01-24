@@ -5,6 +5,8 @@ import lombok.*;
 
 import javax.persistence.*;
 
+import static javax.persistence.FetchType.LAZY;
+
 @Entity
 @Getter
 @Builder
@@ -22,7 +24,10 @@ public class Item extends BaseEntity {
     private boolean isKurlyOnly;
     private String imagePath;
 
+    @OneToOne(fetch = LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "id")
+    private Category category;
+
     @Enumerated
     private SaleStatus saleStatus;
-
 }

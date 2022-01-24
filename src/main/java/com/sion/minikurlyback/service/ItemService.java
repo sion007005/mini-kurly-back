@@ -1,6 +1,7 @@
 package com.sion.minikurlyback.service;
 
 import com.sion.minikurlyback.dto.ItemDto;
+import com.sion.minikurlyback.entity.Category;
 import com.sion.minikurlyback.entity.Item;
 import com.sion.minikurlyback.repository.ItemRepository;
 import com.sion.minikurlyback.utils.FileUploadUtil;
@@ -15,6 +16,7 @@ import java.util.Optional;
 public class ItemService {
     private final ItemRepository itemRepository;
     private final FileUploadUtil fileUploadUtil;
+    private final CategoryService categoryService;
 
     public String saveItemImage(MultipartFile imageFile, String url) {
         String savedImagePath = "";
@@ -31,7 +33,9 @@ public class ItemService {
         fileUploadUtil.deleteExistingFile(path);
     }
 
-    public ItemDto create(ItemDto itemDto) {
+    public ItemDto create(ItemDto itemDto, Long categoryId) {
+        Category category = categoryService.findById(categoryId);
+
         Item item = Item.builder()
                 .name(itemDto.getName())
                 .brand(itemDto.getBrand())
@@ -41,10 +45,10 @@ public class ItemService {
                 .stock(itemDto.getStock())
                 .isKurlyOnly(itemDto.isKurlyOnly())
                 .imagePath(itemDto.getImagePath())
+                .category(category)
                 .build();
 
         itemRepository.save(item);
-
         return ItemDto.from(item);
     }
 

@@ -2,6 +2,7 @@ package com.sion.minikurlyback.controller;
 
 import com.sion.minikurlyback.entity.Category;
 import com.sion.minikurlyback.repository.CategoryRepository;
+import com.sion.minikurlyback.service.CategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
@@ -15,12 +16,13 @@ import java.util.List;
 @Controller
 @RequiredArgsConstructor
 public class CategoryController {
+    private final CategoryService categoryService;
     private final CategoryRepository categoryRepository;
 
     @PostMapping("/category/create")
     public ResponseEntity<Category> create(Category category) {
-        categoryRepository.save(category);
-        return ResponseEntity.ok(category);
+        Category savedCategory = categoryService.create(category);
+        return ResponseEntity.ok(savedCategory);
     }
 
     /**
