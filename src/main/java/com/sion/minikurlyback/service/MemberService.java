@@ -5,6 +5,7 @@ import com.sion.minikurlyback.entity.Member;
 import com.sion.minikurlyback.enums.Authority;
 import com.sion.minikurlyback.jwt.SecurityUtil;
 import com.sion.minikurlyback.repository.MemberRepository;
+import com.sion.minikurlyback.utils.DuplicateMemberException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,12 @@ public class MemberService {
 
     @Transactional
     public Long join(MemberDto memberDto) {
+        Member oneByMemberId = memberRepository.findOneByMemberId(memberDto.getMemberId());
+
+        if (Objects.nonNull(oneByMemberId)) {
+            throw new DuplicateMemberException("사용중인 아이디입니다.");
+        }
+
         Member member = Member.builder()
                 .memberId(memberDto.getMemberId())
                 .password(passwordEncoder.encode(memberDto.getPassword()))
@@ -41,7 +48,7 @@ public class MemberService {
         Member member = memberRepository.findOneByMemberId(memberId);
 
         if (Objects.isNull(member)) {
-            new RuntimeException("유저 정보가 없습니다.");
+            throw new RuntimeException("유저 정보가 없습니다.");
         }
 
         MemberDto memberDto = MemberDto.from(member);
