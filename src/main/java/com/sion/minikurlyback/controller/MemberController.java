@@ -9,13 +9,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.validation.Valid;
+
 @Controller
 @RequiredArgsConstructor
 public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/join")
-    public ResponseEntity<Long> join(MemberDto memberDto) {
+    public ResponseEntity<Long> join(@Valid MemberDto memberDto) {
         return ResponseEntity.ok(memberService.join(memberDto));
     }
 

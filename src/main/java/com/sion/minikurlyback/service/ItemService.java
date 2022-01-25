@@ -3,6 +3,7 @@ package com.sion.minikurlyback.service;
 import com.sion.minikurlyback.dto.ItemDto;
 import com.sion.minikurlyback.entity.Category;
 import com.sion.minikurlyback.entity.Item;
+import com.sion.minikurlyback.enums.SaleStatus;
 import com.sion.minikurlyback.repository.ItemRepository;
 import com.sion.minikurlyback.utils.FileUploadUtil;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +47,7 @@ public class ItemService {
                 .isKurlyOnly(itemDto.isKurlyOnly())
                 .imagePath(itemDto.getImagePath())
                 .category(category)
+                .saleStatus(SaleStatus.ACTIVE)
                 .build();
 
         itemRepository.save(item);

@@ -8,13 +8,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
+
 @Controller
 @RequiredArgsConstructor
 public class ItemController {
     private final ItemService itemService;
 
     @PostMapping("/item/register")
-    public ResponseEntity<ItemDto> create(ItemDto itemDto, Long categoryId) {
+    public ResponseEntity<ItemDto> create(@Valid ItemDto itemDto, Long categoryId) {
         return ResponseEntity.ok(itemService.create(itemDto, categoryId));
     }
 
