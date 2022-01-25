@@ -4,6 +4,7 @@ import com.sion.minikurlyback.enums.SaleStatus;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -21,9 +22,14 @@ public class Item extends BaseEntity {
 
     private String brand;
     private String description;
+
+    @Min(0)
     private Integer salePrice;
+    @Min(0)
     private Integer originalPrice;
+    @Min(0)
     private Integer stock;
+
     private boolean isKurlyOnly;
     private String imagePath;
 
