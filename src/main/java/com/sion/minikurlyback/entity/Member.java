@@ -2,6 +2,7 @@ package com.sion.minikurlyback.entity;
 
 import com.sion.minikurlyback.enums.Authority;
 import com.sion.minikurlyback.enums.Gender;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,8 @@ import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Entity
 public class Member extends BaseEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,16 +40,4 @@ public class Member extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private Authority authority;
-
-    @Builder
-    public Member(String memberId, String password, String name, String email, String phone, Gender gender, String birth, Authority authority) {
-        this.memberId = memberId;
-        this.password = password;
-        this.name = name;
-        this.email = email;
-        this.phone = phone;
-        this.gender = gender;
-        this.birth = birth;
-        this.authority = authority;
-    }
 }

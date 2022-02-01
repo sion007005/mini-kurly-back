@@ -39,15 +39,6 @@ public class MemberDto {
     private Gender gender;
     private String birth;
 
-    public MemberDto(Member member) {
-        this.memberId = member.getMemberId();
-        this.name = member.getName();
-        this.email = member.getEmail();
-        this.phone = member.getPhone();
-        this.gender = member.getGender();
-        this.birth = member.getBirth();
-    }
-
     public static MemberDto from(Member member) {
         if(member == null) return null;
 
