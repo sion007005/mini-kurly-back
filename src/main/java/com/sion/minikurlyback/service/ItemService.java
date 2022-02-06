@@ -30,6 +30,11 @@ public class ItemService {
         return savedImagePath;
     }
 
+    public String uploadImageFile(MultipartFile imageFile) {
+        String savedImagePath = fileUploadUtil.uploadFileToS3(imageFile);
+        return savedImagePath;
+    }
+
     public void deleteItemImage(String path) {
         fileUploadUtil.deleteExistingFile(path);
     }

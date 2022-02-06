@@ -1,13 +1,21 @@
 package com.sion.minikurlyback.utils;
 
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Objects;
 import java.util.UUID;
@@ -17,12 +25,22 @@ import java.util.UUID;
 public class FileUploadUtil {
     @Value("${item.image.path}")
     private String imageUploadPath;
+    @Value("${cloud.aws.s3.bucket}")
+    private String bucket;
+    private final AmazonS3 amazonS3;
 
     /**
-     * 서버에 생성할 파일명을 처리할 랜덤 문자열 반환
-     * @return 랜덤 문자열
+     * 새로운 파일명을 반환
      */
-    private final String getRandomString() {
+    private String getNewFileName(String originalFileName) {
+        final String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
+        /* 서버에 저장할 파일명 (랜덤 문자열 + 확장자) */
+        final String newFileName = getRandomString().concat(originalFileName) + "." + extension;
+
+        return newFileName;
+    }
+
+    private String getRandomString() {
         return UUID.randomUUID().toString().replaceAll("-", "");
     }
 
@@ -45,16 +63,12 @@ public class FileUploadUtil {
         }
 
         try {
-            /* 파일 확장자 */
-            String originalFileName = file.getOriginalFilename();
-            final String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
-            /* 서버에 저장할 파일명 (랜덤 문자열 + 확장자) */
-            final String fileName = getRandomString() + "." + extension;
+            String newFileName = getNewFileName(file.getOriginalFilename());
 
-            File target = new File(imageUploadPath, fileName);
+            File target = new File(imageUploadPath, newFileName);
             file.transferTo(target);
 
-            return imageUploadPath + fileName;
+            return imageUploadPath + newFileName;
         } catch (Exception e) {
             throw new FileUploadException(e.getMessage(), e);
         }
@@ -77,6 +91,22 @@ public class FileUploadUtil {
         }
 
         return imagePath;
+    }
+
+    public String uploadFileToS3(MultipartFile file) {
+        String newFileName = getNewFileName(file.getOriginalFilename());
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentLength(file.getSize());
+        objectMetadata.setContentType(file.getContentType());
+
+        try(InputStream inputStream = file.getInputStream()) {
+            amazonS3.putObject(new PutObjectRequest(bucket, newFileName, inputStream, objectMetadata)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
+        } catch(IOException e) {
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
+        }
+
+        return amazonS3.getUrl(bucket, newFileName).toString();
     }
 
     public void deleteExistingFile(String originalImagePath) {

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.io.IOException;
 
 @Controller
 @RequiredArgsConstructor
@@ -16,7 +17,10 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping("/item/register")
-    public ResponseEntity<ItemDto> create(@Valid ItemDto itemDto, Long categoryId) {
+    public ResponseEntity<ItemDto> create(
+            @Valid ItemDto itemDto,
+            Long categoryId
+            ) {
         return ResponseEntity.ok(itemService.create(itemDto, categoryId));
     }
 
@@ -26,7 +30,7 @@ public class ItemController {
     }
 
     /**
-     * 상품 이미지 파일을 업로드 하는 api
+     * 상품 이미지 파일을 업로드 하는 api(로컬)
      * 파일을 직접 받거나 이미지를 내려받을 url을 파라미터로 받고,
      * 저장된 파일 경로를 반환한다.
      */
@@ -35,6 +39,16 @@ public class ItemController {
             @RequestPart(value = "imageFile", required = false) MultipartFile imageFile,
             @RequestParam String url) {
         String imagePath = itemService.saveItemImage(imageFile, url);
+        return ResponseEntity.ok(imagePath);
+    }
+
+    /**
+     * 이미지파일을 AWS S3에 업로드한다.
+     */
+    @PostMapping("/api/upload")
+    public ResponseEntity<String> uploadImageFile(
+            @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) throws IOException {
+        String imagePath = itemService.uploadImageFile(imageFile);
         return ResponseEntity.ok(imagePath);
     }
 

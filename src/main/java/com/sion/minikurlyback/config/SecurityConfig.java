@@ -1,10 +1,8 @@
 package com.sion.minikurlyback.config;
 
-import com.sion.minikurlyback.jwt.JwtAccessDeniedHandler;
 import com.sion.minikurlyback.jwt.JwtAuthenticationEntryPoint;
 import com.sion.minikurlyback.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,10 +21,6 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final TokenProvider tokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
-    private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-
-    @Value("${jwt.header}")
-    private String headerName;
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -48,7 +42,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .anyRequest().authenticated()
         .and()
         .apply(new JwtSecurityConfig(tokenProvider));  // JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
-//
+
 //        http.logout().logoutUrl("/logout").permitAll()
 //                .deleteCookies("JSESSIONID")
 //                .deleteCookies(headerName)
