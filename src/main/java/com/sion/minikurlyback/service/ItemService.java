@@ -49,7 +49,7 @@ public class ItemService {
                 .salePrice(itemDto.getSalePrice())
                 .originalPrice(itemDto.getOriginalPrice())
                 .stock(itemDto.getStock())
-                .isKurlyOnly(itemDto.isKurlyOnly())
+                .kurlyOnly(itemDto.getKurlyOnly())
                 .imagePath(itemDto.getImagePath())
                 .category(category)
                 .saleStatus(SaleStatus.ACTIVE)

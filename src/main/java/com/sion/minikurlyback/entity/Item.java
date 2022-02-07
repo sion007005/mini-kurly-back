@@ -33,14 +33,14 @@ public class Item extends BaseEntity {
     @Column(columnDefinition = "integer default 0")
     private Integer stock;
 
-    @Column(columnDefinition = "boolean default false")
-    private boolean isKurlyOnly;
+    @Column(name="is_kurly_only", columnDefinition = "boolean default false")
+    private Boolean kurlyOnly;
     private String imagePath;
 
     @OneToOne(fetch = LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     private SaleStatus saleStatus;
 }

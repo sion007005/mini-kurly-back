@@ -18,7 +18,7 @@ public class ItemController {
 
     @PostMapping("/item/register")
     public ResponseEntity<ItemDto> create(
-            @Valid ItemDto itemDto,
+            @Valid @RequestBody ItemDto itemDto,
             Long categoryId
             ) {
         return ResponseEntity.ok(itemService.create(itemDto, categoryId));
