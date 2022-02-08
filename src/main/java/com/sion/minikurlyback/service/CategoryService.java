@@ -24,11 +24,11 @@ public class CategoryService {
     }
 
     public List<Category> findAllByParentId(Long id) {
-        Category parent = findById(id);
+        Category category = findById(id);
 
         List<Category> categories = new ArrayList<>();
-        if (parent.getLevel() == 3) {
-            categories.add(parent);
+        if (category.getLevel() == 2) {
+            categories.add(category);
             return categories;
         }
 
