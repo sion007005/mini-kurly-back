@@ -1,15 +1,15 @@
 package com.sion.minikurlyback.dto;
 
 import com.sion.minikurlyback.entity.Item;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 @Builder
 public class ItemDto {
     @NotNull

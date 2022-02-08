@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -28,5 +29,11 @@ public class ItemController {
     @GetMapping("/item")
     public ResponseEntity<ItemDto> findOneById(@PathVariable Long id) {
         return ResponseEntity.ok(itemService.findOneById(id));
+    }
+
+    @GetMapping("/item/list/{categoryId}")
+    public ResponseEntity<List<ItemDto>> findAllByCategoryId(@PathVariable Long categoryId) {
+        List<ItemDto> itemList = itemService.findAllByCategoryId(categoryId);
+        return ResponseEntity.ok().body(itemList);
     }
 }

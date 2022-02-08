@@ -8,7 +8,9 @@ import com.sion.minikurlyback.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -44,5 +46,17 @@ public class ItemService {
         }
 
         return ItemDto.from(item.get());
+    }
+
+    public List<ItemDto> findAllByCategoryId(Long categoryId) {
+        Category category = categoryService.findById(categoryId);
+
+        if (category.getLevel() == 1) {
+            Category firstChild = categoryService.findAllByParentId(categoryId).get(0);
+            categoryId = firstChild.getId();
+        }
+
+        List<Item> itemList = itemRepository.findByCategoryId(categoryId);
+        return itemList.stream().map(item -> ItemDto.from(item)).collect(Collectors.toList());
     }
 }

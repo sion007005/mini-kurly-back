@@ -15,7 +15,7 @@ import java.io.IOException;
 @RestController
 public class ItemImageController {
     private final ItemImageService itemImageService;
-    
+
     /**
      * 상품 이미지 파일을 업로드 하는 api(로컬)
      * 파일을 직접 받거나 이미지를 내려받을 url을 파라미터로 받고,
