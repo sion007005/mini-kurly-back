@@ -4,7 +4,6 @@ import com.sion.minikurlyback.entity.Category;
 import com.sion.minikurlyback.repository.CategoryRepository;
 import com.sion.minikurlyback.service.CategoryService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,12 +38,8 @@ public class CategoryController {
      */
     @GetMapping("/category/{id}")
     public ResponseEntity<List<Category>> findAllByParentId(@PathVariable("id") Long id) {
-        Sort sort = sortByCategoryOrder();
-        List<Category> categoryList = categoryRepository.findAllByParentId(id, sort);
+        List<Category> categoryList = categoryService.findAllByParentId(id);
         return ResponseEntity.ok(categoryList);
     }
 
-    private Sort sortByCategoryOrder() {
-        return Sort.by(Sort.Direction.ASC, "categoryOrder");
-    }
 }
