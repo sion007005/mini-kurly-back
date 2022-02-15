@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long> {
-    public Member findOneByIdx(Long idx);
-    public Member findOneByMemberId(String memberId);
+    Member findOneByIdx(Long idx);
+    Member findOneByMemberId(String memberId);
 }
