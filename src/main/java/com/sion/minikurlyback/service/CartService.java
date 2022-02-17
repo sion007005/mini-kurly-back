@@ -1,5 +1,6 @@
 package com.sion.minikurlyback.service;
 
+import com.sion.minikurlyback.dto.CartItemDetailDto;
 import com.sion.minikurlyback.dto.CartItemDto;
 import com.sion.minikurlyback.entity.Cart;
 import com.sion.minikurlyback.entity.CartItem;
@@ -14,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Transactional
@@ -66,5 +69,17 @@ public class CartService {
 
     /**
      * 상품 목록보기
+     * TODO controller에서 memberIdx로 받아오기(인증관련 로직부터 수정)
      */
+    public List<CartItemDetailDto> getMyCartList(String memberId) {
+        Member member = memberRepository.findOneByMemberId(memberId);
+        Cart cart = cartRepository.findByMemberIdx(member.getIdx());
+
+        List<CartItemDetailDto> cartList = new ArrayList<>();
+        if (cart == null) {
+            return cartList;
+        }
+
+        return cartItemRepository.findCartDetailDtoList(cart.getId());
+    }
 }
