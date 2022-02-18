@@ -15,7 +15,7 @@ import static javax.persistence.FetchType.LAZY;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Item extends BaseEntity {
+public class Item extends BaseTimeEntity {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 

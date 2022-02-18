@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Table(name = "orders")
 @Getter
 @NoArgsConstructor
-public class Order extends BaseEntity {
+public class Order extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
