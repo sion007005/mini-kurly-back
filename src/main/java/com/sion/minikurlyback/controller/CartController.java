@@ -39,4 +39,17 @@ public class CartController {
         List<CartItemDetailDto> cartList = cartService.getMyCartList(principal.getName());
         return ResponseEntity.ok().body(cartList);
     }
+
+    @PostMapping("/cart/order")
+// TODO 리스트 받아오지 못함    @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY )
+    public ResponseEntity order(@RequestBody List<CartItemDto> cartItemDtoList, Principal principal) {
+        if (cartItemDtoList.size() == 0 || cartItemDtoList == null) {
+            return ResponseEntity.badRequest().body("주문이 선택된 상품이 없습니다.");
+        }
+
+        // TODO 주문권한 확인
+
+        Long orderId = cartService.orderCartItem(cartItemDtoList, principal.getName());
+        return ResponseEntity.ok().body(orderId);
+    }
 }
