@@ -2,6 +2,7 @@ package com.sion.minikurlyback.controller;
 
 import com.sion.minikurlyback.dto.CartItemDetailDto;
 import com.sion.minikurlyback.dto.CartItemDto;
+import com.sion.minikurlyback.dto.CartOrderDto;
 import com.sion.minikurlyback.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -41,8 +42,9 @@ public class CartController {
     }
 
     @PostMapping("/cart/order")
-// TODO 리스트 받아오지 못함    @JsonFormat(with = JsonFormat.Feature.ACCEPT_SINGLE_VALUE_AS_ARRAY )
-    public ResponseEntity order(@RequestBody List<CartItemDto> cartItemDtoList, Principal principal) {
+    public ResponseEntity order(@RequestBody CartOrderDto cartOrderDto, Principal principal) {
+        List<CartItemDto> cartItemDtoList = cartOrderDto.getCartItemDtoList();
+
         if (cartItemDtoList.size() == 0 || cartItemDtoList == null) {
             return ResponseEntity.badRequest().body("주문이 선택된 상품이 없습니다.");
         }
