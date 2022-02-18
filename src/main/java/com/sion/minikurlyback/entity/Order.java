@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "orders")
 @Getter
 @NoArgsConstructor
 public class Order extends BaseEntity {
