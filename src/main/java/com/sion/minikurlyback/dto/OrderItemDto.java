@@ -1,13 +1,16 @@
 package com.sion.minikurlyback.dto;
 
-import com.sion.minikurlyback.entity.Item;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
+
 @Getter
 @Setter
-public class OrderItemDto {
-    private Item item;
-    private Integer count;
-
+public class OrderItemDto { // 단독 주문 상품
+    @NotNull(message = "상품 아이디는 필수 입력 값입니다.")
+    private Long itemId;
+    @Min(value = 1, message = "최소 1개 이상 담아주세요.")
+    private int count;
 }

@@ -2,7 +2,7 @@ package com.sion.minikurlyback.service;
 
 import com.sion.minikurlyback.dto.CartItemDetailDto;
 import com.sion.minikurlyback.dto.CartItemDto;
-import com.sion.minikurlyback.dto.OrderItemDto;
+import com.sion.minikurlyback.dto.OrderDto;
 import com.sion.minikurlyback.entity.*;
 import com.sion.minikurlyback.repository.CartItemRepository;
 import com.sion.minikurlyback.repository.CartRepository;
@@ -87,19 +87,19 @@ public class CartService {
      * 장바구니에서 선택된 상품 주문하고, 장바구니에서 삭제하기
      */
     public Long orderCartItem(List<CartItemDto> cartItemList, String memberId) {
-        List<OrderItemDto> orderItemDtoList = new ArrayList<>();
+        List<OrderDto> orderDtoList = new ArrayList<>();
 
         for (CartItemDto cartItemDto : cartItemList) {
             Item item = itemRepository.findById(cartItemDto.getItemId()).orElseThrow(EntityNotFoundException::new);
-            OrderItemDto orderItemDto = new OrderItemDto();
-            orderItemDto.setItem(item);
-            orderItemDto.setCount(cartItemDto.getCount());
+            OrderDto orderDto = new OrderDto();
+            orderDto.setItem(item);
+            orderDto.setCount(cartItemDto.getCount());
 
-            orderItemDtoList.add(orderItemDto);
+            orderDtoList.add(orderDto);
             deleteCartItem(cartItemDto.getCartItemId());
         }
 
-        Long orderId = orderService.order(orderItemDtoList, memberId);
+        Long orderId = orderService.order(orderDtoList, memberId);
 
         return orderId;
     }

@@ -1,12 +1,13 @@
 package com.sion.minikurlyback.dto;
 
+import com.sion.minikurlyback.entity.Item;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @Setter
 public class OrderDto {
-    List<CartItemDto> cartItemDtoList;
+    private Item item;
+    private Integer count;
+
 }
