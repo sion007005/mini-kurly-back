@@ -56,7 +56,7 @@ public class ItemService {
             categoryId = firstChild.getId();
         }
 
-        List<Item> itemList = itemRepository.findByCategoryId(categoryId);
+        List<Item> itemList = itemRepository.findByCategoryIdOrderByCreatedAtDesc(categoryId);
         return itemList.stream().map(item -> ItemDto.from(item)).collect(Collectors.toList());
     }
 }
