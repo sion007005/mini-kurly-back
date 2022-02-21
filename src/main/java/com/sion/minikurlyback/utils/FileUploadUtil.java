@@ -33,9 +33,8 @@ public class FileUploadUtil {
      * 새로운 파일명을 반환
      */
     private String getNewFileName(String originalFileName) {
-        final String extension = originalFileName.substring(originalFileName.lastIndexOf("."));
         /* 서버에 저장할 파일명 (랜덤 문자열 + 확장자) */
-        final String newFileName = getRandomString().concat(originalFileName) + "." + extension;
+        final String newFileName = getRandomString().concat(originalFileName);
 
         return newFileName;
     }
