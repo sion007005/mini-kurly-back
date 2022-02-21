@@ -6,6 +6,7 @@ import com.sion.minikurlyback.entity.Item;
 import com.sion.minikurlyback.enums.SaleStatus;
 import com.sion.minikurlyback.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -48,7 +49,7 @@ public class ItemService {
         return ItemDto.from(item.get());
     }
 
-    public List<ItemDto> findAllByCategoryId(Long categoryId) {
+    public List<ItemDto> findAllByCategoryId(Long categoryId, Pageable pageable) {
         Category category = categoryService.findById(categoryId);
 
         if (category.getLevel() == 1) {
@@ -56,7 +57,7 @@ public class ItemService {
             categoryId = firstChild.getId();
         }
 
-        List<Item> itemList = itemRepository.findByCategoryIdOrderByCreatedAtDesc(categoryId);
+        List<Item> itemList = itemRepository.findByCategoryIdOrderByCreatedAtDesc(categoryId,pageable);
         return itemList.stream().map(item -> ItemDto.from(item)).collect(Collectors.toList());
     }
 }

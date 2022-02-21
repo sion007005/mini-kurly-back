@@ -3,6 +3,7 @@ package com.sion.minikurlyback.controller;
 import com.sion.minikurlyback.dto.ItemDto;
 import com.sion.minikurlyback.service.ItemService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,8 +33,8 @@ public class ItemController {
     }
 
     @GetMapping("/item/list/{categoryId}")
-    public ResponseEntity<List<ItemDto>> findAllByCategoryId(@PathVariable Long categoryId) {
-        List<ItemDto> itemList = itemService.findAllByCategoryId(categoryId);
+    public ResponseEntity<List<ItemDto>> findAllByCategoryId(@PathVariable Long categoryId, Pageable pageable) {
+        List<ItemDto> itemList = itemService.findAllByCategoryId(categoryId, pageable);
         return ResponseEntity.ok().body(itemList);
     }
 }
