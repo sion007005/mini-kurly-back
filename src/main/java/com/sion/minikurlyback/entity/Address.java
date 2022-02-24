@@ -13,5 +13,5 @@ public class Address {
     private String addressBasic;
     private String addressDetail;
     private String zipCode;
-    private Boolean isMainAddress; // 기본배송지 여부
+    private Boolean mainAddress; // 기본배송지 여부
 }
