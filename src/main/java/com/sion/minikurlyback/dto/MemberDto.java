@@ -39,6 +39,18 @@ public class MemberDto {
     private Gender gender;
     private String birth;
 
+    @NotBlank
+    private String addressBasic;
+
+    @NotBlank
+    private String addressDetail;
+
+    @NotBlank
+    @Length(min = 5, max = 5)
+    private String zipCode;
+
+    private Boolean mainAddress;
+
     public static MemberDto from(Member member) {
         if(member == null) return null;
 

@@ -1,9 +1,11 @@
 package com.sion.minikurlyback.service;
 
 import com.sion.minikurlyback.dto.MemberDto;
+import com.sion.minikurlyback.entity.Address;
 import com.sion.minikurlyback.entity.Member;
 import com.sion.minikurlyback.enums.Authority;
 import com.sion.minikurlyback.jwt.SecurityUtil;
+import com.sion.minikurlyback.repository.AddressRepository;
 import com.sion.minikurlyback.repository.MemberRepository;
 import com.sion.minikurlyback.utils.DuplicateMemberException;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import java.util.Objects;
 public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final AddressRepository addressRepository;
 
     @Transactional
     public Long join(MemberDto memberDto) {
@@ -39,6 +42,15 @@ public class MemberService {
                 .build();
 
         memberRepository.save(member);
+
+        Address address = Address.builder()
+                .memberIdx(member.getIdx())
+                .addressBasic(memberDto.getAddressBasic())
+                .addressDetail(memberDto.getAddressDetail())
+                .zipCode(memberDto.getZipCode())
+                .mainAddress(memberDto.getMainAddress())
+                .build();
+        addressRepository.save(address);
 
         return member.getIdx();
     }
