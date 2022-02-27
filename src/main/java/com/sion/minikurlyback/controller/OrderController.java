@@ -1,9 +1,6 @@
 package com.sion.minikurlyback.controller;
 
-import com.sion.minikurlyback.dto.CartItemDetailDto;
-import com.sion.minikurlyback.dto.CartItemDto;
-import com.sion.minikurlyback.dto.CartOrderDto;
-import com.sion.minikurlyback.dto.OrderItemDto;
+import com.sion.minikurlyback.dto.*;
 import com.sion.minikurlyback.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,28 +18,32 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
 
-    // 장바구니에서 상품을 선택한 뒤 주문하기를 클릭하면, 주문 페이지를 보여준다.
-    // 주문페이지에서는 주문 상품 목록을 보여주고, 결제 수단과 배송지를 입력받는다.
+    /**
+     * 주문페이지 보여주기(장바구니에서 주문선택한 상품과 사용자의 기본배송지 정보)
+     */
     @GetMapping("/order")
-    public ResponseEntity getOrderPage(@RequestBody CartOrderDto cartOrderDto, Principal principal) {
-        List<CartItemDto> cartItemDtoList = cartOrderDto.getCartItemDtoList();
+    public ResponseEntity getOrderPage(@RequestBody OrderDto orderDto, Principal principal) {
+        List<OrderItemDto> orderItemDtoList = orderDto.getOrderItemList();
 
-        if (cartItemDtoList.size() == 0 || cartItemDtoList == null) {
+        if (orderItemDtoList.size() == 0 || orderItemDtoList == null) {
             return ResponseEntity.badRequest().body("주문이 선택된 상품이 없습니다.");
         }
 
-        List<CartItemDetailDto> itemDetailList = cartOrderDto.getCartItemDetailDtoList();
-        return ResponseEntity.ok().body(itemDetailList);
+        OrderDto orderDetails = orderService.getOrderPage(orderDto, principal.getName());
+
+        return ResponseEntity.ok().body(orderDetails);
     }
-    
-    // TODO 주문 페이지에서 배송정보도 받아오도록 개선
-    @PostMapping("/item/order")
-    public ResponseEntity order(@RequestBody @Valid OrderItemDto orderItemDto, Principal principal) {
+
+    /**
+     * 주문페이지에서 상품 주문하기
+     */
+    @PostMapping("/order")
+    public ResponseEntity order(@RequestBody @Valid OrderDto orderDto, Principal principal) {
         String memberId = principal.getName();
         Long orderId;
 
         try {
-            orderId = orderService.orderOneItem(orderItemDto, memberId);
+            orderId = orderService.order(orderDto, memberId);
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("상품 주문 실패");
         }

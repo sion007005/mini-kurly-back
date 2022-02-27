@@ -2,10 +2,7 @@ package com.sion.minikurlyback.service;
 
 import com.sion.minikurlyback.dto.OrderDto;
 import com.sion.minikurlyback.dto.OrderItemDto;
-import com.sion.minikurlyback.entity.Item;
-import com.sion.minikurlyback.entity.Member;
-import com.sion.minikurlyback.entity.Order;
-import com.sion.minikurlyback.entity.OrderItem;
+import com.sion.minikurlyback.entity.*;
 import com.sion.minikurlyback.repository.ItemRepository;
 import com.sion.minikurlyback.repository.MemberRepository;
 import com.sion.minikurlyback.repository.OrderItemRepository;
@@ -15,7 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -25,39 +22,39 @@ public class OrderService {
     private final OrderItemRepository orderItemRepository;
     private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
+    private final AddressService addressService;
+    private final CartService cartService;
 
-    /*
-    여러 상품을 한번에 주문 (장바구니)
-     */
-    public Long order(List<OrderDto> orderDtoList, String memberId) {
+    public OrderDto getOrderPage(OrderDto orderDto, String memberId) {
+        Member member = memberRepository.findOneByMemberId(memberId);
+        Address mainAddress = addressService.findMainAddressByMember(member.getIdx());
+
+        if (Objects.nonNull(mainAddress)) {
+            orderDto.setAddressBasic(mainAddress.getAddressBasic());
+            orderDto.setAddressDetail(mainAddress.getAddressDetail());
+            orderDto.setMainAddress(mainAddress.getMainAddress());
+        }
+
+        return orderDto;
+    }
+
+    public Long order(OrderDto orderDto, String memberId) {
         Member member = memberRepository.findOneByMemberId(memberId);
 
         Order order = Order.createOrder(member);
         Order savedOrder = orderRepository.save(order);
 
-        for (OrderDto orderDto : orderDtoList) {
-            Item item = orderDto.getItem();
-            OrderItem orderItem = OrderItem.createOrderItem(savedOrder, item, item.getSalePrice(), orderDto.getCount());
+        for (OrderItemDto orderItemDto : orderDto.getOrderItemList()) {
+            Item item = itemRepository.findById(orderItemDto.getItemId()).orElseThrow(EntityNotFoundException::new);
+            OrderItem orderItem = OrderItem.createOrderItem(savedOrder, item, item.getSalePrice(), orderItemDto.getCount());
             orderItemRepository.save(orderItem);
+
+            // 장바구니에서 삭제
+            cartService.deleteCartItem(member.getIdx(), item.getId());
         }
 
         return savedOrder.getId();
     }
 
-    /*
-    상품 상세페이지에서 단독 상품을 주문
-     */
-    public Long orderOneItem(OrderItemDto orderItemDto, String memberId) {
-        Member member = memberRepository.findOneByMemberId(memberId);
-
-        Order order = Order.createOrder(member);
-        Order savedOrder = orderRepository.save(order);
-
-        Item item = itemRepository.findById(orderItemDto.getItemId()).orElseThrow(EntityNotFoundException::new);
-        OrderItem orderItem = OrderItem.createOrderItem(savedOrder, item, item.getSalePrice(), orderItemDto.getCount());
-        orderItemRepository.save(orderItem);
-
-        return savedOrder.getId();
-    }
 
 }

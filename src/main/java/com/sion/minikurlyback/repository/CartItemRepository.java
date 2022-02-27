@@ -16,4 +16,12 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
             "where ci.cart.id = :cartId " +
             "order by ci.createdAt desc")
     List<CartItemDetailDto> findCartDetailDtoList(Long cartId);
+
+    @Query("select new com.sion.minikurlyback.entity.CartItem(ci.id, ci.cart, ci.item, ci.count) " +
+            "from CartItem ci " +
+            "join ci.cart c " +
+            "on c.id = ci.cart.id " +
+            "where c.member.idx = :memberIdx " +
+            "and ci.item.id = :itemId ")
+    CartItem findByMemberIdxAndItemId(Long memberIdx, Long itemId);
 }

@@ -2,8 +2,10 @@ package com.sion.minikurlyback.service;
 
 import com.sion.minikurlyback.dto.CartItemDetailDto;
 import com.sion.minikurlyback.dto.CartItemDto;
-import com.sion.minikurlyback.dto.OrderDto;
-import com.sion.minikurlyback.entity.*;
+import com.sion.minikurlyback.entity.Cart;
+import com.sion.minikurlyback.entity.CartItem;
+import com.sion.minikurlyback.entity.Item;
+import com.sion.minikurlyback.entity.Member;
 import com.sion.minikurlyback.repository.CartItemRepository;
 import com.sion.minikurlyback.repository.CartRepository;
 import com.sion.minikurlyback.repository.ItemRepository;
@@ -24,7 +26,6 @@ public class CartService {
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
     private final ItemRepository itemRepository;
-    private final OrderService orderService;
 
     /**
      * 장바구니에 상품추가
@@ -59,14 +60,6 @@ public class CartService {
     }
 
     /**
-     * 상품 삭제
-     */
-    public void deleteCartItem(Long cartItemId) {
-        CartItem cartItem = cartItemRepository.findById(cartItemId).orElseThrow(EntityNotFoundException::new);
-        cartItemRepository.delete(cartItem);
-    }
-
-    /**
      * 상품 목록보기
      * TODO controller에서 memberIdx로 받아오기(인증관련 로직부터 수정)
      */
@@ -82,25 +75,19 @@ public class CartService {
         return cartItemRepository.findCartDetailDtoList(cart.getId());
     }
 
+    /**
+     * 장바구니 상품 삭제1 (장바구니 페이지에서 ajax요청)
+     */
+    public void deleteCartItem(Long cartItemId) {
+        CartItem cartItem = cartItemRepository.findById(cartItemId).orElseThrow(EntityNotFoundException::new);
+        cartItemRepository.delete(cartItem);
+    }
 
     /**
-     * 장바구니에서 선택된 상품 주문하고, 장바구니에서 삭제하기
+     * 장바구니 상품 삭제2 (주문완료 후 장바구니 상품 삭제)
      */
-    public Long orderCartItem(List<CartItemDto> cartItemList, String memberId) {
-        List<OrderDto> orderDtoList = new ArrayList<>();
-
-        for (CartItemDto cartItemDto : cartItemList) {
-            Item item = itemRepository.findById(cartItemDto.getItemId()).orElseThrow(EntityNotFoundException::new);
-            OrderDto orderDto = new OrderDto();
-            orderDto.setItem(item);
-            orderDto.setCount(cartItemDto.getCount());
-
-            orderDtoList.add(orderDto);
-            deleteCartItem(cartItemDto.getCartItemId());
-        }
-
-        Long orderId = orderService.order(orderDtoList, memberId);
-
-        return orderId;
+    public void deleteCartItem(Long memberIdx, Long itemId) {
+        CartItem cartItem = cartItemRepository.findByMemberIdxAndItemId(memberIdx, itemId);
+        cartItemRepository.delete(cartItem);
     }
 }

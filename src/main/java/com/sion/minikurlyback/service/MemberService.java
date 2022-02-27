@@ -71,7 +71,15 @@ public class MemberService {
     @Transactional(readOnly = true)
     public MemberDto getMyInfo() {
         Member member = memberRepository.findOneByMemberId(SecurityUtil.getCurrentMemberId());
+        Address address = addressRepository.findByMemberIdx(member.getIdx()); // TODO 현재는 하나의 멤버가 하나의 주소만 갖는다. 추후 개선하기
+
         MemberDto memberDto = MemberDto.from(member);
+
+        if (Objects.nonNull(address)) {
+            memberDto.setAddressBasic(address.getAddressBasic());
+            memberDto.setAddressDetail(address.getAddressDetail());
+            memberDto.setMainAddress(address.getMainAddress());
+        }
 
         return memberDto;
     }
