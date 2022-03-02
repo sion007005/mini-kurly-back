@@ -5,10 +5,10 @@ import com.sion.minikurlyback.dto.CartItemDto;
 import com.sion.minikurlyback.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.security.Principal;
 import java.util.List;
 
 @RestController
@@ -17,8 +17,8 @@ public class CartController {
     private final CartService cartService;
 
     @PostMapping("/cart/new")
-    public ResponseEntity addCart(@Valid @RequestBody CartItemDto cartItemDto, Principal principal) {
-        Long savedItemId = cartService.addCart(cartItemDto, principal.getName());
+    public ResponseEntity addCart(@Valid @RequestBody CartItemDto cartItemDto, @AuthenticationPrincipal String memberId) {
+        Long savedItemId = cartService.addCart(cartItemDto, memberId);
         return ResponseEntity.ok().body(savedItemId);
     }
 
@@ -35,8 +35,8 @@ public class CartController {
     }
 
     @GetMapping("/my-cart")
-    public ResponseEntity getMyCart(Principal principal) {
-        List<CartItemDetailDto> cartList = cartService.getMyCartList(principal.getName());
+    public ResponseEntity getMyCart(@AuthenticationPrincipal String memberId) {
+        List<CartItemDetailDto> cartList = cartService.getMyCartList(memberId);
         return ResponseEntity.ok().body(cartList);
     }
 
