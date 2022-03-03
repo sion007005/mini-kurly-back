@@ -69,6 +69,17 @@ public class MemberService {
     }
 
     @Transactional(readOnly = true)
+    public Member findByEmail(String email) {
+        Member member = memberRepository.findByEmail(email);
+
+        if (Objects.isNull(member)) {
+            throw new RuntimeException("이메일 주소를 다시 확인해주세요.");
+        }
+
+        return member;
+    }
+
+    @Transactional(readOnly = true)
     public MemberDto getMyInfo() {
         Member member = memberRepository.findOneByMemberId(SecurityUtil.getCurrentMemberId());
         Address address = addressRepository.findByMemberIdx(member.getIdx()); // TODO 현재는 하나의 멤버가 하나의 주소만 갖는다. 추후 개선하기
@@ -82,5 +93,11 @@ public class MemberService {
         }
 
         return memberDto;
+    }
+
+    @Transactional
+    public void updatePassword(String email, String password) {
+        Member member = findByEmail(email);
+        member.updatePassword(password);
     }
 }

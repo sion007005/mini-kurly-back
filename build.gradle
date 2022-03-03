@@ -24,7 +24,7 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.projectlombok:lombok'
 	implementation 'mysql:mysql-connector-java'
-
+	implementation 'org.springframework.boot:spring-boot-starter-mail:2.6.3'
 
 //	compileOnly 'org.projectlombok:lombok'
 //	runtimeOnly 'mysql:mysql-connector-java'

@@ -39,6 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .authorizeRequests()
         .antMatchers( "/join").permitAll() // 회원가입과 로그인 api는 토큰이 없는 상태에서 요청이 오므로 permitAll 설정
         .antMatchers( "/login").permitAll()
+        .antMatchers("/temp-password").permitAll()
         .anyRequest().authenticated()
         .and()
         .apply(new JwtSecurityConfig(tokenProvider));  // JwtFilter 를 addFilterBefore 로 등록했던 JwtSecurityConfig 클래스를 적용
