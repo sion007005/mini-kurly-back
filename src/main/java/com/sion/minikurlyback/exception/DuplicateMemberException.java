@@ -1,4 +1,4 @@
-package com.sion.minikurlyback.utils;
+package com.sion.minikurlyback.exception;
 
 public class DuplicateMemberException extends RuntimeException {
     public DuplicateMemberException(Throwable e) {

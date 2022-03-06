@@ -1,4 +1,4 @@
-package com.sion.minikurlyback.utils;
+package com.sion.minikurlyback.exception;
 
 public class FileUploadException extends RuntimeException {
     public FileUploadException(Throwable e) {

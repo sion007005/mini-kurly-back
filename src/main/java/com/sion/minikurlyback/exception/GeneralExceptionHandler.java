@@ -1,4 +1,4 @@
-package com.sion.minikurlyback.controller;
+package com.sion.minikurlyback.exception;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.http.fileupload.FileUploadException;
@@ -10,11 +10,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @ControllerAdvice
 @Slf4j
-public class ExceptionController {
+public class GeneralExceptionHandler {
     // 400
     @ExceptionHandler({
-//            MemberJoinException.class,
-            RuntimeException.class
+            RuntimeException.class,
+            DuplicateMemberException.class,
+            IllegalRequestException.class
     })
     public ResponseEntity<Object> BadRequestException(final RuntimeException ex) {
         log.warn("error", ex);
@@ -28,12 +29,19 @@ public class ExceptionController {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
     }
 
+    // 404
+    @ExceptionHandler({ NotFoundException.class })
+    public ResponseEntity handleNotFoundException(final Exception ex) {
+        log.warn("error", ex);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
     // 500
     @ExceptionHandler({
             Exception.class,
             FileUploadException.class
     })
-    public ResponseEntity<Object> handleAll(final Exception ex) {
+    public ResponseEntity<Object> handleInternalServerException(final Exception ex) {
         log.info(ex.getClass().getName());
         log.error("error", ex);
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);

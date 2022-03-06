@@ -4,10 +4,11 @@ import com.sion.minikurlyback.dto.MemberDto;
 import com.sion.minikurlyback.entity.Address;
 import com.sion.minikurlyback.entity.Member;
 import com.sion.minikurlyback.enums.Authority;
+import com.sion.minikurlyback.exception.DuplicateMemberException;
+import com.sion.minikurlyback.exception.IllegalRequestException;
 import com.sion.minikurlyback.jwt.SecurityUtil;
 import com.sion.minikurlyback.repository.AddressRepository;
 import com.sion.minikurlyback.repository.MemberRepository;
-import com.sion.minikurlyback.utils.DuplicateMemberException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -60,7 +61,7 @@ public class MemberService {
         Member member = memberRepository.findOneByMemberId(memberId);
 
         if (Objects.isNull(member)) {
-            throw new RuntimeException("유저 정보가 없습니다.");
+            throw new IllegalRequestException("유저 정보가 없습니다.");
         }
 
         MemberDto memberDto = MemberDto.from(member);
@@ -73,7 +74,7 @@ public class MemberService {
         Member member = memberRepository.findByEmail(email);
 
         if (Objects.isNull(member)) {
-            throw new RuntimeException("이메일 주소를 다시 확인해주세요.");
+            throw new IllegalRequestException("이메일 주소를 다시 확인해주세요.");
         }
 
         return member;

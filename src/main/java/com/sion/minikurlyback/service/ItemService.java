@@ -4,6 +4,7 @@ import com.sion.minikurlyback.dto.ItemDto;
 import com.sion.minikurlyback.entity.Category;
 import com.sion.minikurlyback.entity.Item;
 import com.sion.minikurlyback.enums.SaleStatus;
+import com.sion.minikurlyback.exception.IllegalRequestException;
 import com.sion.minikurlyback.repository.ItemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -43,7 +44,7 @@ public class ItemService {
         Optional<Item> item = itemRepository.findById(id);
 
         if (!item.isPresent()) {
-            new RuntimeException("등록된 상품이 없습니다.");
+            new IllegalRequestException("등록된 상품이 없습니다.");
         }
 
         return ItemDto.from(item.get());
