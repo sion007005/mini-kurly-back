@@ -75,6 +75,7 @@ public class OrderService {
      */
     public OrderDetailDto findById(Long orderId) {
         // TODO 현재 주문(Order)에는 배송정보가 없다
+        Order order = orderRepository.findById(orderId).orElseThrow(EntityNotFoundException::new);
         List<OrderItem> orderItemList = orderItemRepository.findAllByOrderId(orderId);
         List<OrderItemDetailDto> orderItemDetailDtos = new ArrayList<>();
 
@@ -91,6 +92,7 @@ public class OrderService {
         }
         OrderDetailDto orderDetailDto = OrderDetailDto.builder()
                 .orderId(orderId)
+                .orderStatus(order.getOrderStatus())
 //                .addressBasic()
 //                .addressDetail()
                 .orderItemList(orderItemDetailDtos)

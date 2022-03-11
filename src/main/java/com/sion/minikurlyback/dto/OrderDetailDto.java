@@ -1,5 +1,6 @@
 package com.sion.minikurlyback.dto;
 
+import com.sion.minikurlyback.enums.OrderStatus;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import java.util.List;
  */
 public class OrderDetailDto {
     private Long orderId;
+    private OrderStatus orderStatus;
 //    private String addressBasic;
 //    private String addressDetail;
     private List<OrderItemDetailDto> orderItemList;
