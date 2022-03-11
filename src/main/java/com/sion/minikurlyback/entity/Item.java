@@ -1,6 +1,7 @@
 package com.sion.minikurlyback.entity;
 
 import com.sion.minikurlyback.enums.SaleStatus;
+import com.sion.minikurlyback.exception.NotEnoughStockException;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,4 +44,23 @@ public class Item extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     private SaleStatus saleStatus;
+
+    /**
+     * stock 증가
+     */
+    public void addStock(int quantity) {
+        this.stock += quantity;
+    }
+
+    /**
+     * stock 감소
+     */
+    public void removeStock(int quantity) {
+        int rest = this.stock - quantity;
+        if (rest < 0) {
+            throw new NotEnoughStockException("재고가 부족합니다.");
+        }
+
+        this.stock = rest;
+    }
 }

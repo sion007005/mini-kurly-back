@@ -1,5 +1,6 @@
 package com.sion.minikurlyback.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.sion.minikurlyback.enums.Authority;
 import com.sion.minikurlyback.enums.Gender;
 import lombok.AllArgsConstructor;
@@ -8,6 +9,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -44,4 +47,8 @@ public class Member extends BaseTimeEntity {
     public void updatePassword(String password) {
         this.password = password;
     }
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "member")
+    private List<Order> orders = new ArrayList<>();
 }

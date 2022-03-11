@@ -56,5 +56,22 @@ public class OrderService {
         return savedOrder.getId();
     }
 
+    /**
+     * 주문취소
+     */
+    public void cancelOrder(Long orderId) {
+        //주문 엔티티 조회
+        Order order = findById(orderId);
+        //주문 취소
+        order.cancel();
+    }
+
+    /**
+     * 주문아이디로 주문내역 가져오기
+     */
+    public Order findById(Long orderId) {
+        Order order = orderRepository.findById(orderId).orElseThrow(EntityNotFoundException::new);
+        return order;
+    }
 
 }

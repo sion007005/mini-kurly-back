@@ -6,10 +6,7 @@ import com.sion.minikurlyback.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -45,9 +42,18 @@ public class OrderController {
         try {
             orderId = orderService.order(orderDto, memberId);
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("상품 주문 실패");
+            return ResponseEntity.badRequest().body("상품 주문 실패 : " + e.getMessage());
         }
 
         return ResponseEntity.ok().body(orderId);
+    }
+
+    /**
+     * 주문취소
+     */
+    @PostMapping("/orders/{orderId}/cancel")
+    public ResponseEntity cancel(@PathVariable("orderId") Long orderId) {
+        orderService.cancelOrder(orderId);
+        return ResponseEntity.ok().body(true);
     }
 }
