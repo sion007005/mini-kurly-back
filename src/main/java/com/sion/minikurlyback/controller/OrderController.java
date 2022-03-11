@@ -1,5 +1,6 @@
 package com.sion.minikurlyback.controller;
 
+import com.sion.minikurlyback.dto.OrderDetailDto;
 import com.sion.minikurlyback.dto.OrderDto;
 import com.sion.minikurlyback.dto.OrderItemDto;
 import com.sion.minikurlyback.service.OrderService;
@@ -56,4 +57,14 @@ public class OrderController {
         orderService.cancelOrder(orderId);
         return ResponseEntity.ok().body(true);
     }
+
+    /**
+     * 한 건의 주문내역 확인하기
+     */
+    @GetMapping("/order/{orderId}")
+    public ResponseEntity getOrderDetail(@PathVariable("orderId") Long orderId) {
+        OrderDetailDto orderDetailDto = orderService.findById(orderId);
+        return ResponseEntity.ok().body(orderDetailDto);
+    }
+
 }

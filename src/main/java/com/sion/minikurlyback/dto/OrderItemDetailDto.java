@@ -10,10 +10,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class OrderItemDetailDto {
-    private Long cartItemId;
     private String name;
     private String brand;
-    private Integer salePrice;
+    private Integer orderPrice;
     private Integer count;
     private String imagePath;
 }
