@@ -35,18 +35,21 @@ public class Order extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private OrderStatus orderStatus;
 
-    public static Order createOrder(Member member, OrderItem... orderItems) {
-        Order order = new Order(member, orderItems);
+    public static Order createOrder(Member member, Delivery delivery, List<OrderItem> orderItems) {
+        Order order = new Order(member, delivery, orderItems);
         return order;
     }
 
-    private Order(Member member, OrderItem... orderItems) {
+    private Order(Member member, Delivery delivery, List<OrderItem> orderItems) {
         this.member = member;
         this.orderStatus = OrderStatus.ORDERED;
+        this.delivery = delivery;
 
         for (OrderItem orderItem : orderItems) {
             addOrderItem(orderItem);
         }
+
+        setDelivery(delivery);
     }
 
     // 연관관계 메서드
@@ -57,6 +60,12 @@ public class Order extends BaseTimeEntity {
 
     public void addOrderItem(OrderItem orderItem) {
         orderItems.add(orderItem);
+        orderItem.setOrder(this);
+    }
+
+    public void setDelivery(Delivery delivery) {
+        this.delivery = delivery;
+        delivery.setOrder(this);
     }
 
     /**

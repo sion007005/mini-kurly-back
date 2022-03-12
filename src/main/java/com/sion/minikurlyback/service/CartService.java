@@ -2,10 +2,7 @@ package com.sion.minikurlyback.service;
 
 import com.sion.minikurlyback.dto.CartItemDetailDto;
 import com.sion.minikurlyback.dto.CartItemDto;
-import com.sion.minikurlyback.entity.Cart;
-import com.sion.minikurlyback.entity.CartItem;
-import com.sion.minikurlyback.entity.Item;
-import com.sion.minikurlyback.entity.Member;
+import com.sion.minikurlyback.entity.*;
 import com.sion.minikurlyback.repository.CartItemRepository;
 import com.sion.minikurlyback.repository.CartRepository;
 import com.sion.minikurlyback.repository.ItemRepository;
@@ -89,5 +86,12 @@ public class CartService {
     public void deleteCartItem(Long memberIdx, Long itemId) {
         CartItem cartItem = cartItemRepository.findByMemberIdxAndItemId(memberIdx, itemId);
         cartItemRepository.delete(cartItem);
+    }
+
+    public void deleteCartItem(Long memberIdx, List<OrderItem> orderItemList) {
+        for (OrderItem orderItem : orderItemList) {
+            CartItem cartItem = cartItemRepository.findByMemberIdxAndItemId(memberIdx, orderItem.getItem().getId());
+            cartItemRepository.delete(cartItem);
+        }
     }
 }

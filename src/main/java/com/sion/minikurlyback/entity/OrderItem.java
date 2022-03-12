@@ -29,18 +29,17 @@ public class OrderItem {
     private Integer orderPrice;
     private Integer count;
 
-    public static OrderItem createOrderItem(Order order, Item item, Integer orderPrice, Integer count) {
-       OrderItem orderItem = new OrderItem(order, item, orderPrice, count);
+    public static OrderItem createOrderItem(Item item, Integer orderPrice, Integer count) {
+       OrderItem orderItem = new OrderItem(item, orderPrice, count);
        item.removeStock(count);
 
        return orderItem;
     }
 
-    private OrderItem(Order order, Item item, Integer orderPrice, Integer count) {
+    private OrderItem(Item item, Integer orderPrice, Integer count) {
         this.item = item;
         this.orderPrice = orderPrice;
         this.count = count;
-        this.order = order;
     }
 
     /**

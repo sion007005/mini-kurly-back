@@ -18,5 +18,6 @@ public class OrderDetailDto {
     private OrderStatus orderStatus;
     private String addressBasic;
     private String addressDetail;
+    private String zipCode;
     private List<OrderItemDetailDto> orderItemList;
 }

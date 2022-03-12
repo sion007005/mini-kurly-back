@@ -2,6 +2,7 @@ package com.sion.minikurlyback.service;
 
 import com.sion.minikurlyback.dto.*;
 import com.sion.minikurlyback.entity.*;
+import com.sion.minikurlyback.enums.DeliveryStatus;
 import com.sion.minikurlyback.repository.ItemRepository;
 import com.sion.minikurlyback.repository.MemberRepository;
 import com.sion.minikurlyback.repository.OrderItemRepository;
@@ -26,6 +27,9 @@ public class OrderService {
     private final AddressService addressService;
     private final CartService cartService;
 
+    /**
+     * 주문페이지
+     */
     public OrderDetailDto getOrderPage(CartOrderDto cartOrderDto, String memberId) {
         Member member = memberRepository.findOneByMemberId(memberId);
         Address mainAddress = addressService.findMainAddressByMember(member.getIdx());
@@ -34,6 +38,7 @@ public class OrderService {
         if (Objects.nonNull(mainAddress)) {
             orderDetailDto.setAddressBasic(mainAddress.getAddressDetail().getAddressBasic());
             orderDetailDto.setAddressDetail(mainAddress.getAddressDetail().getAddressDetail());
+            orderDetailDto.setZipCode(mainAddress.getAddressDetail().getZipCode());
         }
 
         List<CartItemDto> cartItemDtoList = cartOrderDto.getCartItemList();
@@ -61,20 +66,29 @@ public class OrderService {
         return orderItemDetailDtos;
     }
 
+    /**
+     * 주문하기
+     */
     public Long order(OrderDto orderDto, String memberId) {
         Member member = memberRepository.findOneByMemberId(memberId);
 
-        Order order = Order.createOrder(member);
-        Order savedOrder = orderRepository.save(order);
+        Delivery delivery = new Delivery();
+        AddressDetail addressDetail = new AddressDetail(orderDto.getAddressBasic(), orderDto.getAddressDetail(), orderDto.getZipCode());
+        delivery.setAddressDetail(addressDetail);
+        delivery.setDeliveryStatus(DeliveryStatus.READY);
 
+        List<OrderItem> orderItemList = new ArrayList<>();
         for (OrderItemDto orderItemDto : orderDto.getOrderItemList()) {
             Item item = itemRepository.findById(orderItemDto.getItemId()).orElseThrow(EntityNotFoundException::new);
-            OrderItem orderItem = OrderItem.createOrderItem(savedOrder, item, item.getSalePrice(), orderItemDto.getCount());
-            orderItemRepository.save(orderItem);
-
-            // 장바구니에서 삭제
-            cartService.deleteCartItem(member.getIdx(), item.getId());
+            OrderItem orderItem = OrderItem.createOrderItem(item, item.getSalePrice(), orderItemDto.getCount());
+            orderItemList.add(orderItem);
         }
+
+        Order order = Order.createOrder(member, delivery, orderItemList);
+        Order savedOrder = orderRepository.save(order);
+
+        // 주문이 완료된 상품들은 장바구니에서 삭제
+        cartService.deleteCartItem(member.getIdx(), orderItemList);
 
         return savedOrder.getId();
     }
