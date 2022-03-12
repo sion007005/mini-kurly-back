@@ -19,14 +19,8 @@ public class Address {
     @Column(nullable = false)
     private Long memberIdx; // 회원테이블 pk
 
-    @Column(nullable = false)
-    private String addressBasic;
-
-    @Column(nullable = false)
-    private String addressDetail;
-
-    @Column(nullable = false)
-    private String zipCode;
+    @Embedded
+    private AddressDetail addressDetail;
 
     @Column(name="is_main_address", columnDefinition = "boolean default true", nullable = false)
     private Boolean mainAddress; // 기본배송지 여부

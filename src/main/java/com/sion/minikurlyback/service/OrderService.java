@@ -1,9 +1,6 @@
 package com.sion.minikurlyback.service;
 
-import com.sion.minikurlyback.dto.OrderDetailDto;
-import com.sion.minikurlyback.dto.OrderDto;
-import com.sion.minikurlyback.dto.OrderItemDetailDto;
-import com.sion.minikurlyback.dto.OrderItemDto;
+import com.sion.minikurlyback.dto.*;
 import com.sion.minikurlyback.entity.*;
 import com.sion.minikurlyback.repository.ItemRepository;
 import com.sion.minikurlyback.repository.MemberRepository;
@@ -29,17 +26,39 @@ public class OrderService {
     private final AddressService addressService;
     private final CartService cartService;
 
-    public OrderDto getOrderPage(OrderDto orderDto, String memberId) {
+    public OrderDetailDto getOrderPage(CartOrderDto cartOrderDto, String memberId) {
         Member member = memberRepository.findOneByMemberId(memberId);
         Address mainAddress = addressService.findMainAddressByMember(member.getIdx());
+        OrderDetailDto orderDetailDto = new OrderDetailDto();
 
         if (Objects.nonNull(mainAddress)) {
-            orderDto.setAddressBasic(mainAddress.getAddressBasic());
-            orderDto.setAddressDetail(mainAddress.getAddressDetail());
-            orderDto.setMainAddress(mainAddress.getMainAddress());
+            orderDetailDto.setAddressBasic(mainAddress.getAddressDetail().getAddressBasic());
+            orderDetailDto.setAddressDetail(mainAddress.getAddressDetail().getAddressDetail());
         }
 
-        return orderDto;
+        List<CartItemDto> cartItemDtoList = cartOrderDto.getCartItemList();
+        List<OrderItemDetailDto> orderItemDetailDtos = getOrderItemList(cartItemDtoList);
+        orderDetailDto.setOrderItemList(orderItemDetailDtos);
+        return orderDetailDto;
+    }
+
+    private List<OrderItemDetailDto> getOrderItemList(List<CartItemDto> cartItemDtoList) {
+        List<OrderItemDetailDto> orderItemDetailDtos = new ArrayList<>();
+
+        for (CartItemDto cartItemDto : cartItemDtoList) {
+            Item item = itemRepository.findById(cartItemDto.getItemId()).orElseThrow(EntityNotFoundException::new);
+            OrderItemDetailDto orderItemDetailDto = OrderItemDetailDto.builder()
+                    .name(item.getName())
+                    .brand(item.getBrand())
+                    .orderPrice(item.getSalePrice())
+                    .count(cartItemDto.getCount())
+                    .imagePath(item.getImagePath())
+                    .build();
+
+            orderItemDetailDtos.add(orderItemDetailDto);
+        }
+
+        return orderItemDetailDtos;
     }
 
     public Long order(OrderDto orderDto, String memberId) {
@@ -91,7 +110,6 @@ public class OrderService {
             orderItemDetailDtos.add(orderItemDetailDto);
         }
         OrderDetailDto orderDetailDto = OrderDetailDto.builder()
-                .orderId(orderId)
                 .orderStatus(order.getOrderStatus())
 //                .addressBasic()
 //                .addressDetail()

@@ -2,6 +2,7 @@ package com.sion.minikurlyback.service;
 
 import com.sion.minikurlyback.dto.MemberDto;
 import com.sion.minikurlyback.entity.Address;
+import com.sion.minikurlyback.entity.AddressDetail;
 import com.sion.minikurlyback.entity.Member;
 import com.sion.minikurlyback.enums.Authority;
 import com.sion.minikurlyback.exception.DuplicateMemberException;
@@ -44,11 +45,10 @@ public class MemberService {
 
         memberRepository.save(member);
 
+        AddressDetail addressDetail = new AddressDetail(memberDto.getAddressBasic(), memberDto.getAddressDetail(), memberDto.getZipCode());
         Address address = Address.builder()
                 .memberIdx(member.getIdx())
-                .addressBasic(memberDto.getAddressBasic())
-                .addressDetail(memberDto.getAddressDetail())
-                .zipCode(memberDto.getZipCode())
+                .addressDetail(addressDetail)
                 .mainAddress(memberDto.getMainAddress())
                 .build();
         addressRepository.save(address);
@@ -88,8 +88,9 @@ public class MemberService {
         MemberDto memberDto = MemberDto.from(member);
 
         if (Objects.nonNull(address)) {
-            memberDto.setAddressBasic(address.getAddressBasic());
-            memberDto.setAddressDetail(address.getAddressDetail());
+            memberDto.setAddressBasic(address.getAddressDetail().getAddressBasic());
+            memberDto.setAddressDetail(address.getAddressDetail().getAddressDetail());
+            memberDto.setZipCode(address.getAddressDetail().getZipCode());
             memberDto.setMainAddress(address.getMainAddress());
         }
 

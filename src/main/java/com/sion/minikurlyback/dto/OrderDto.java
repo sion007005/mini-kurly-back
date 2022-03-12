@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @Setter
-public class OrderDto { // 주문페이지에서 받아오는 데이터
+public class OrderDto { // 주문페이지에서 받아오는 데이터 
     // 상품리스트, 주소정보
     private List<OrderItemDto> orderItemList;
     private String addressBasic;

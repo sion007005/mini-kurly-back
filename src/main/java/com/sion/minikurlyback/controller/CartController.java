@@ -22,10 +22,10 @@ public class CartController {
         return ResponseEntity.ok().body(savedItemId);
     }
 
-    @PostMapping("/cart/update/{cartItemId}")
-    public ResponseEntity updateCart(@PathVariable Long cartItemId, @RequestBody CartItemDto cartItemDto) {
-        cartService.updateItemCount(cartItemId, cartItemDto.getCount());
-        return ResponseEntity.ok().body(cartItemId);
+    @PostMapping("/cart/update")
+    public ResponseEntity updateCart(@RequestBody CartItemDto cartItemDto) {
+        cartService.updateItemCount(cartItemDto.getCartItemId(), cartItemDto.getCount());
+        return ResponseEntity.ok().body("count changed successfully : " + cartItemDto.getCartItemId());
     }
 
     @PostMapping("/cart/delete/{cartItemId}")
