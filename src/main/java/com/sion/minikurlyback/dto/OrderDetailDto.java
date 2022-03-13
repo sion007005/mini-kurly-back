@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 /**
- * 주문전/주문완료 후 주문 상세내역을 확인하는 페이지용 dto
+ * 주문전/주문완료 후 주문 상세내역을 확인하는 페이지용
  */
 public class OrderDetailDto {
 //    private Long orderId;
