@@ -1,8 +1,12 @@
 package com.sion.minikurlyback.controller;
 
-import com.sion.minikurlyback.dto.*;
+import com.sion.minikurlyback.dto.CartItemDto;
+import com.sion.minikurlyback.dto.CartOrderDto;
+import com.sion.minikurlyback.dto.OrderDetailDto;
+import com.sion.minikurlyback.dto.OrderDto;
 import com.sion.minikurlyback.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -67,11 +71,11 @@ public class OrderController {
     }
 
     /**
-     * 모든 주문내역 확인하기 TODO 페이징
+     * 모든 주문내역 확인하기
      */
     @GetMapping("/order/list")
-    public ResponseEntity getOrderList(@AuthenticationPrincipal String memberId) {
-        List<OrderDetailDto> orderList = orderService.findAll(memberId);
+    public ResponseEntity getOrderList(@AuthenticationPrincipal String memberId, Pageable pageable) {
+        List<OrderDetailDto> orderList = orderService.findAll(memberId, pageable);
         return ResponseEntity.ok().body(orderList);
     }
 }

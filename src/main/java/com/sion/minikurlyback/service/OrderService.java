@@ -8,6 +8,7 @@ import com.sion.minikurlyback.repository.MemberRepository;
 import com.sion.minikurlyback.repository.OrderItemRepository;
 import com.sion.minikurlyback.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -135,9 +136,9 @@ public class OrderService {
     /**
      * 로그인한 사용자의 주문 리스트 가져오기
      */
-    public List<OrderDetailDto> findAll(String memberId) {
+    public List<OrderDetailDto> findAll(String memberId, Pageable pageable) {
         Member member = memberRepository.findOneByMemberId(memberId);
-        List<Order> orders = orderRepository.findByMemberIdx(member.getIdx());
+        List<Order> orders = orderRepository.findByMemberIdx(member.getIdx(), pageable);
         List<OrderDetailDto> orderList = new ArrayList<>();
 
         if (!orders.isEmpty()) {
