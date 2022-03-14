@@ -133,10 +133,21 @@ public class OrderService {
     }
 
     /**
-     * TODO 로그인한 사용자의 주문 리스트 가져오기
+     * 로그인한 사용자의 주문 리스트 가져오기
      */
-//    public List<OrderDto> findAll(String memberId) {
-//
-//    }
+    public List<OrderDetailDto> findAll(String memberId) {
+        Member member = memberRepository.findOneByMemberId(memberId);
+        List<Order> orders = orderRepository.findByMemberIdx(member.getIdx());
+        List<OrderDetailDto> orderList = new ArrayList<>();
+
+        if (!orders.isEmpty()) {
+            for (Order order : orders) {
+                OrderDetailDto orderDetailDto = findById(order.getId());
+                orderList.add(orderDetailDto);
+            }
+        }
+
+        return orderList;
+    }
 
 }

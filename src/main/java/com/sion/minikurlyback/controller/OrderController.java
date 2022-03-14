@@ -17,6 +17,7 @@ public class OrderController {
 
     /**
      * 주문페이지 보여주기(장바구니에서 주문선택한 상품과 사용자의 기본배송지 정보)
+     * TODO 장바구니상품의 pk만 받아와서 아이템하고 수량 확인하도록 변경하기(아래 주문하기도 마찬가지)
      */
     @GetMapping("/order")
     public ResponseEntity getOrderPage(@RequestBody CartOrderDto cartOrderDto, @AuthenticationPrincipal String memberId) {
@@ -65,4 +66,12 @@ public class OrderController {
         return ResponseEntity.ok().body(orderDetailDto);
     }
 
+    /**
+     * 모든 주문내역 확인하기 TODO 페이징
+     */
+    @GetMapping("/order/list")
+    public ResponseEntity getOrderList(@AuthenticationPrincipal String memberId) {
+        List<OrderDetailDto> orderList = orderService.findAll(memberId);
+        return ResponseEntity.ok().body(orderList);
+    }
 }
