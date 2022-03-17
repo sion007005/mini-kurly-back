@@ -55,9 +55,13 @@ public class OrderController {
     /**
      * 주문취소
      */
-    @PostMapping("/orders/{orderId}/cancel")
-    public ResponseEntity cancel(@PathVariable("orderId") Long orderId) {
-        orderService.cancelOrder(orderId);
+    @PostMapping("/order/cancel/{orderId}")
+    public ResponseEntity cancel(@PathVariable("orderId") Long orderId, @AuthenticationPrincipal String memberId) {
+        try {
+            orderService.cancelOrder(orderId, memberId);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("주문 취소 실패 : " + e.getMessage());
+        }
         return ResponseEntity.ok().body(true);
     }
 

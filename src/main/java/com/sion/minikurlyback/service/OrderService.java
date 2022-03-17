@@ -3,6 +3,7 @@ package com.sion.minikurlyback.service;
 import com.sion.minikurlyback.dto.*;
 import com.sion.minikurlyback.entity.*;
 import com.sion.minikurlyback.enums.DeliveryStatus;
+import com.sion.minikurlyback.exception.IllegalRequestException;
 import com.sion.minikurlyback.repository.ItemRepository;
 import com.sion.minikurlyback.repository.MemberRepository;
 import com.sion.minikurlyback.repository.OrderItemRepository;
@@ -97,9 +98,13 @@ public class OrderService {
     /**
      * 주문취소
      */
-    public void cancelOrder(Long orderId) {
+    public void cancelOrder(Long orderId, String memberId) {
         //주문 엔티티 조회
         Order order = orderRepository.findById(orderId).orElseThrow(EntityNotFoundException::new);
+        if (order.getMember().getMemberId() != memberId) {
+            throw new IllegalRequestException("잘못된 접근입니다.");
+        }
+
         //주문 취소
         order.cancel();
     }
