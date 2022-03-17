@@ -53,12 +53,13 @@ public class OrderService {
         List<OrderItemDetailDto> orderItemDetailDtos = new ArrayList<>();
 
         for (CartItemDto cartItemDto : cartItemDtoList) {
-            Item item = itemRepository.findById(cartItemDto.getItemId()).orElseThrow(EntityNotFoundException::new);
+            CartItem cartItem = cartService.findOneById(cartItemDto.getCartItemId());
+            Item item = itemRepository.findById(cartItem.getId()).orElseThrow(EntityNotFoundException::new);
             OrderItemDetailDto orderItemDetailDto = OrderItemDetailDto.builder()
                     .name(item.getName())
                     .brand(item.getBrand())
                     .orderPrice(item.getSalePrice())
-                    .count(cartItemDto.getCount())
+                    .count(cartItem.getCount())
                     .imagePath(item.getImagePath())
                     .build();
 

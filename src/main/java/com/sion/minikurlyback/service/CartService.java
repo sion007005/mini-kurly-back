@@ -94,4 +94,8 @@ public class CartService {
             cartItemRepository.delete(cartItem);
         }
     }
+
+    public CartItem findOneById(Long cartItemId) {
+        return cartItemRepository.findById(cartItemId).orElseThrow(EntityNotFoundException::new);
+    }
 }
