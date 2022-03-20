@@ -6,6 +6,7 @@ import com.sion.minikurlyback.service.MailService;
 import com.sion.minikurlyback.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +40,7 @@ public class MemberController {
     public ResponseEntity<String> setTemporaryPassword(@RequestParam String email) {
         String temporaryPassword = getTemporaryPassword();
         String encodedPassword = passwordEncoder.encode(temporaryPassword);
-        memberService.updatePassword(email, encodedPassword);
+        memberService.setTempPassword(email, encodedPassword);
 
         MailInfoDto mailInfoDto = new MailInfoDto();
         mailInfoDto.setAddress(email);
@@ -52,5 +53,12 @@ public class MemberController {
 
     private String getTemporaryPassword() {
         return UUID.randomUUID().toString().replaceAll("-", "");
+    }
+
+    @PostMapping("/password/update")
+    public ResponseEntity<String> changePassword(@AuthenticationPrincipal String memberId, String rawPassword) {
+        memberService.updatePassword(memberId, rawPassword);
+
+        return ResponseEntity.ok("비밀번호가 성공적으로 변경되었습니다.");
     }
 }

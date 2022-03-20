@@ -98,8 +98,15 @@ public class MemberService {
     }
 
     @Transactional
-    public void updatePassword(String email, String password) {
+    public void setTempPassword(String email, String tempPassword) {
         Member member = findByEmail(email);
-        member.updatePassword(password);
+        member.updatePassword(tempPassword);
+    }
+
+    @Transactional
+    public void updatePassword(String memberId, String rawPassword) {
+        Member member = memberRepository.findOneByMemberId(memberId);
+        String encodedPassword = passwordEncoder.encode(rawPassword);
+        member.updatePassword(encodedPassword);
     }
 }
